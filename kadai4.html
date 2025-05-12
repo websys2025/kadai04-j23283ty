@@ -69,6 +69,9 @@
             // 商品オブジェクトの生成
 
             // 課題4-2. ここにコードを書く
+            for (let i = 0; i < items.length; i++){
+                itemArea.innerHTML += "<tr><th>"+items[i].name + "</th><th>"+items[i].price+"</th><th>"+items[i].stock+'</th><th><button type="button" id="'+items.id+'">購入</button></th></tr>';
+            }
             // 商品表の作成
 
             // クリックイベント時の購入処理の設定
