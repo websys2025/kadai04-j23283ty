@@ -7,7 +7,18 @@
     <body>
         <h1 id="vending-machine">自動販売機システム</h1>
         <table id="item_area" border="1"></table>
+        <table id="money_area">
+            <tr><th>所持金</th><th id = "money">0</th></tr>
+        </table>
+        <p id = "text"></p>
         <script>
+            let money = 1000;
+            function showMoney() {
+                document.getElementById("money").textContent = money;
+            }
+            function showText(text){
+                document.getElementById("text").textContent = text;
+            }
             // 商品一覧を記録する連想配列の配列
             const items =  [
                 { id: 1, name: "緑茶", price: 140, stock: 5 },
@@ -35,7 +46,7 @@
                 static showItemList(list) {
                     console.log("商品は以下の" + Item.number + "種類です。");
                     for (let i = 0; i < list.length; i++){
-                    console.log("商品番号: "+ list[i].id+", 商品名: "+ list[i].name+", 金額: "+ list[i].price+", 在庫数: "+list[i].stock);
+                        console.log("商品番号: "+ list[i].id+", 商品名: "+ list[i].name+", 金額: "+ list[i].price+", 在庫数: "+list[i].stock);
                     }
                     console.log(""); // 空行の出力
                 }
@@ -43,14 +54,22 @@
                 // 商品購入の関数
                 buyItem() {          
                     if (this.stock >= 1) { 
-                        console.log("商品番号: "+this.id+", 商品名: "+this.name+"を購入します。");
-                        // 課題4-2. ここにコードを書く
-                        // 購入による商品の在庫削減処理
-                        this.stock --;
-                        // 課題4-3. ここにコードを書く
-                        document.getElementById("stock"+this.id).textContent = this.stock;
+                        if (this.price <= money){
+                            console.log("商品番号: "+this.id+", 商品名: "+this.name+"を購入します。");
+                            this.stock --;
+                            document.getElementById("stock"+this.id).textContent = this.stock;
+                            money -= this.price;
+                            showMoney();
+                            showText(this.name +"("+this.price+"円) を購入しました。所持金は "+money+" 円です。");
+                        }
+                        else{
+                            showText("所持金が不足しているため購入できません。"+this.name+"を購入するには "+this.price+" 円必要です。");
+                        }
                         // 在庫用のエレメントを抽出し、HTML内の個数を更新
-                    } else console.log(this.name+"は商品の在庫がないため購入できません。");
+                    } else {
+                        showText(this.name+" は在庫がないため購入できません。");
+                        console.log(this.name+"は商品の在庫がないため購入できません。");
+                    }
                 }
             } // End of Item class
 
@@ -73,6 +92,7 @@
             for (let i = 0; i < items.length; i++){
                 itemArea.innerHTML += "<tr><td>"+items[i].name + "</td><td>"+items[i].price+'</td><td id="stock'+items[i].id+'">'+items[i].stock+'</td><td><button type="button" id="button'+items[i].id+'">購入</button></td></tr>';
             }
+            showMoney();
             // 商品表の作成
 
             // クリックイベント時の購入処理の設定
